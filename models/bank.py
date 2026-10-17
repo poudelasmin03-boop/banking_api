@@ -41,6 +41,7 @@ class DbOpenAccount(Base):
     username = Column(String, nullable=False)
     address = Column(String, nullable=False)
     phone_no = Column(String, nullable=False)
+    user_id = Column(Integer, ForeignKey("Users.id"))
     create_at = Column(DateTime(timezone=True), default=lambda: datetime.now(UTC))
     account = relationship("DbAccount", back_populates="open_account")
 
@@ -61,6 +62,7 @@ class DbTranscation(Base):
     __tablename__ = "Transcation"
     id = Column(Integer, primary_key=True, index=True)
     sender = Column(Integer, ForeignKey("Account.id"), nullable=False)
+    transcation = Column(String, nullable=False)
     receiver = Column(Integer, ForeignKey("Account.id"), nullable=False)
     amount = Column(Float, nullable=False)
     create_at = Column(DateTime(timezone=True), default=lambda: datetime.now(UTC))

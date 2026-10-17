@@ -33,7 +33,10 @@ async def open_account(
 
     try:
         new_application = DbOpenAccount(
-            username=username, phone_no=phone_no, address=address
+            username=username,
+            phone_no=phone_no,
+            address=address,
+            user_id=current_user.id,
         )
 
         db.add(new_application)

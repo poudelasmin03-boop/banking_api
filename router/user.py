@@ -1,5 +1,3 @@
-from pydoc import plain
-from warnings import deprecated
 from typing import Optional
 import bcrypt
 from fastapi import FastAPI, APIRouter, Form, Depends, HTTPException, status
@@ -14,7 +12,7 @@ from fastapi.security import OAuth2PasswordBearer, OAuth2PasswordRequestForm
 
 from database.db import engine, Base, get_db
 
-from bankingAPi.models.bank import DbUser
+from models.bank import DbUser
 
 from datetime import datetime, timedelta, timezone
 from sqlalchemy.orm.session import Session

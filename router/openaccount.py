@@ -2,9 +2,10 @@ import secrets
 
 from database.db import get_db
 from fastapi import APIRouter, Depends, Form, HTTPException, status
-from models.bank import DbAccount, DbOpenAccount
+from models.bank import DbAccount, DbOpenAccount, DbUser
 from sqlalchemy.orm import Session
 from models.bank import AccountStatus, AccountType
+from router.user import get_current_user
 
 router = APIRouter(prefix="/open_account", tags=["Open Account"])
 
@@ -17,6 +18,7 @@ async def open_account(
     account_type: str = Form(AccountType.saving),
     account_status: str = Form(AccountStatus.active),
     db: Session = Depends(get_db),
+    current_user: DbUser = Depends(get_current_user),
 ):
     ##it return the query of if existing user exist
     existing__user = (

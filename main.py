@@ -3,6 +3,8 @@ from fastapi import staticfiles
 from router.openaccount import router as openaccount_router
 from fastapi.staticfiles import StaticFiles
 from fastapi.middleware.cors import CORSMiddleware
+from router.user import router as user_router
+from router.transcation import router as transcation_router
 
 app = FastAPI()
 
@@ -19,6 +21,8 @@ app.add_middleware(
 
 
 app.include_router(openaccount_router)
+app.include_router(user_router)
+app.include_router(transcation_router)
 
 
 @app.get("/")

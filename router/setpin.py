@@ -97,7 +97,7 @@ def update_pin(
 
     if Hash.verify(check_pin.pin, new_pin):
         raise HTTPException(
-            status_code=400, detail="Current pin  cannotnot match to the perivous pin"
+            status_code=400, detail="Current pin  cann't match to the perivous pin"
         )
     if new_pin != confirm:
         raise HTTPException(

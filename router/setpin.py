@@ -61,3 +61,54 @@ def setPin(
     db.refresh(set_pin)
 
     return {"message": f"Pin number of {user.username} is set successfully"}
+
+
+### Update the existing pin code
+@router.put("/update_pin")
+def update_pin(
+    pin: str = Form(...),
+    new_pin: str = Form(...),
+    confirm: str = Form(...),
+    db: Session = Depends(get_db),
+    current_user: str = Depends(get_current_user),
+):
+
+    user = user = (
+        db.query(DbOpenAccount).filter(DbOpenAccount.user_id == current_user.id).first()
+    )
+    if not user:
+        raise HTTPException(status_code=404, detail="User not found..")
+    print("username", user.username)
+    print("Current_user", current_user.username)
+
+    check_pin = (
+        db.query(DbTranscationPin)
+        .filter(DbTranscationPin.account_id == user.id)
+        .first()
+    )
+
+    if not check_pin:
+        raise HTTPException(status_code=400, detail="Pin not found")
+
+    hased_new_pin = Hash.Hash_pin(new_pin)
+
+    if not Hash.verify(check_pin.pin, pin):
+        raise HTTPException(status_code=400, detail="Incorrect previous pin")
+
+    if Hash.verify(check_pin.pin, new_pin):
+        raise HTTPException(
+            status_code=400, detail="Current pin  cannotnot match to the perivous pin"
+        )
+    if new_pin != confirm:
+        raise HTTPException(
+            status_code=400, detail="new pin and confirm pin not matching.."
+        )
+
+    try:
+        check_pin.pin = hased_new_pin
+        db.commit()
+        return {"message": "Transcation pin is update successfully.."}
+
+    except Exception as e:
+        print("Error", repr(e))
+        raise HTTPException(status_code=400, detail="Error occur while updated the pin")

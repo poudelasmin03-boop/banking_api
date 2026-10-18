@@ -1,6 +1,12 @@
 from email.policy import HTTP
 
-from models.bank import DbAccount, DbOpenAccount, DbTranscation, DbUser
+from models.bank import (
+    DbAccount,
+    DbOpenAccount,
+    DbTranscation,
+    DbUser,
+    DbTranscationPin,
+)
 
 from database.db import Base, get_db
 from sqlalchemy.orm import Session
@@ -11,6 +17,8 @@ from fastapi import FastAPI, Form, File, APIRouter, HTTPException, status, Depen
 
 from router.user import get_current_user
 
+from router.setpin import Hash
+
 router = APIRouter(prefix="/transaction", tags=["Transcation"])
 
 
@@ -19,6 +27,7 @@ def Transcation_money(
     amount: float = Form(...),
     sender: DbUser = Depends(get_current_user),
     account_nbr: str = Form(...),
+    pin: str = Form(...),
     db: Session = Depends(get_db),
 ):
     if amount <= 0:
@@ -54,6 +63,19 @@ def Transcation_money(
 
     if sender_account.balance < amount:
         raise HTTPException(status_code=400, detail="Insufficient balance")
+
+    enter_pin = (
+        db.query(DbTranscationPin)
+        .filter(DbTranscationPin.account_id == sender.id)
+        .first()
+    )
+    if not enter_pin:
+        raise HTTPException(status_code=400, detail="Invlaid ")
+
+    print(enter_pin.pin)
+
+    if not Hash.verify(enter_pin.pin, pin):
+        raise HTTPException(status_code=403, detail="Incorrect pin")
 
     try:
         receiver_account_nbr.balance += amount

@@ -6,6 +6,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from router.user import router as user_router
 from router.transcation import router as transcation_router
 from router.profile import router as profile_router
+from router.setpin import router as router_pin
 
 
 app = FastAPI()
@@ -26,6 +27,7 @@ app.include_router(openaccount_router)
 app.include_router(user_router)
 app.include_router(transcation_router)
 app.include_router(profile_router)
+app.include_router(router_pin)
 
 
 @app.get("/")

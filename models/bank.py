@@ -1,5 +1,6 @@
 import enum
 from datetime import UTC, datetime
+from typing import Counter
 
 from database.db import Base
 from sqlalchemy import (
@@ -68,3 +69,10 @@ class DbTranscation(Base):
     create_at = Column(DateTime(timezone=True), default=lambda: datetime.now(UTC))
     sender_account = relationship("DbAccount", foreign_keys=[sender])
     receiver_account = relationship("DbAccount", foreign_keys=[receiver])
+
+
+class DbTranscationPin(Base):
+    __tablename__ = "Transcation Pin"
+    id = Column(Integer, primary_key=True, index=True)
+    pin = Column(String, nullable=False)
+    account_id = Column(Integer, ForeignKey("CreateAccount.id"))
